@@ -13,6 +13,8 @@ library(palmerpenguins)
 ```
 
 
+## Warm Ups
+
 ```{r}
 penguins_clean <- penguins %>% 
   filter(island != "Torgersen") %>% 
@@ -30,4 +32,86 @@ penguins_clean_2 <- penguins %>%
             sd_flip = sd(flipper_length_mm),
             sample_size = n())
 ```
+
+## Joins Practice
+
+### Mutating Joins
+
+Do not use data pasta as a replacement for importing data sets! This is a threat to reproducibility. 
+
+```{r}
+animals <- tibble::tribble(
+  ~location,   ~species,  ~maturity,
+   "lagoon",   "bobcat",    "adult",
+    "bluff",   "coyote", "juvenile",
+    "creek",      "fox",    "adult",
+     "oaks", "squirrel", "juvenile",
+    "bluff",   "bobcat",    "adult"
+  )
+
+
+sites <- tibble::tribble(
+           ~location,      ~full_site_name, ~jurisdiction,
+             "beach",       "Goleta Beach",     "SB City",
+            "lagoon",        "UCSB Lagoon",        "UCSB",
+             "bluff",       "Ellwood Mesa",     "SB City",
+              "oaks", "Fremont Campground",        "USFS"
+           )
+
+```
+
+**Full Join**
+
+The safest kind of join :)
+This is a mutating join. You can tell becasue columns are for matching key elements. 
+
+```{r}
+animals_full_join <- full_join(animals, sites, by = "location")
+```
+
+**Left Join **
+
+left_join(animals, sites): I would expect 
+
+```{r}
+animals_left_join <- left_join(animals, sites, by = "location")
+```
+
+
+**Inner Join **
+
+```{r}
+animals_inner_join <- inner_join(animals, sites, by = "location")
+```
+
+### Filtering Joins
+
+Does not increase the number of columns. 
+
+**Semi Join**
+
+```{r}
+animals_semi_join <- semi_join(animals, sites, by = "location")
+```
+
+**Anti-Join**
+
+Order is important! The code keeps observations with a key match from the first dataframe listed in the command. 
+
+```{r}
+animals_anti_join <- anti_join(animals, sites, by = "location")
+
+animals_anti_join_2 <- anti_join(sites, animals, by = "location")
+```
+
+*You can pipe together joins, but it is confusing! Make sure you know what you're doing at every step.*
+
+
+
+
+
+
+
+
+
 

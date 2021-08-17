@@ -171,6 +171,8 @@ pre code {
 </div>
 
 
+<div id="warm-ups" class="section level2">
+<h2>Warm Ups</h2>
 <pre class="r"><code>penguins_clean &lt;- penguins %&gt;% 
   filter(island != &quot;Torgersen&quot;) %&gt;% 
   select(-c(year, sex)) %&gt;% 
@@ -183,6 +185,51 @@ pre code {
   summarize(mean_flip = mean(flipper_length_mm),
             sd_flip = sd(flipper_length_mm),
             sample_size = n())</code></pre>
+</div>
+<div id="joins-practice" class="section level2">
+<h2>Joins Practice</h2>
+<div id="mutating-joins" class="section level3">
+<h3>Mutating Joins</h3>
+<p>Do not use data pasta as a replacement for importing data sets! This is a threat to reproducibility.</p>
+<pre class="r"><code>animals &lt;- tibble::tribble(
+  ~location,   ~species,  ~maturity,
+   &quot;lagoon&quot;,   &quot;bobcat&quot;,    &quot;adult&quot;,
+    &quot;bluff&quot;,   &quot;coyote&quot;, &quot;juvenile&quot;,
+    &quot;creek&quot;,      &quot;fox&quot;,    &quot;adult&quot;,
+     &quot;oaks&quot;, &quot;squirrel&quot;, &quot;juvenile&quot;,
+    &quot;bluff&quot;,   &quot;bobcat&quot;,    &quot;adult&quot;
+  )
+
+
+sites &lt;- tibble::tribble(
+           ~location,      ~full_site_name, ~jurisdiction,
+             &quot;beach&quot;,       &quot;Goleta Beach&quot;,     &quot;SB City&quot;,
+            &quot;lagoon&quot;,        &quot;UCSB Lagoon&quot;,        &quot;UCSB&quot;,
+             &quot;bluff&quot;,       &quot;Ellwood Mesa&quot;,     &quot;SB City&quot;,
+              &quot;oaks&quot;, &quot;Fremont Campground&quot;,        &quot;USFS&quot;
+           )</code></pre>
+<p><strong>Full Join</strong></p>
+<p>The safest kind of join :) This is a mutating join. You can tell becasue columns are for matching key elements.</p>
+<pre class="r"><code>animals_full_join &lt;- full_join(animals, sites, by = &quot;location&quot;)</code></pre>
+<p><strong>Left Join </strong></p>
+<p>left_join(animals, sites): I would expect</p>
+<pre class="r"><code>animals_left_join &lt;- left_join(animals, sites, by = &quot;location&quot;)</code></pre>
+<p><strong>Inner Join </strong></p>
+<pre class="r"><code>animals_inner_join &lt;- inner_join(animals, sites, by = &quot;location&quot;)</code></pre>
+</div>
+<div id="filtering-joins" class="section level3">
+<h3>Filtering Joins</h3>
+<p>Does not increase the number of columns.</p>
+<p><strong>Semi Join</strong></p>
+<pre class="r"><code>animals_semi_join &lt;- semi_join(animals, sites, by = &quot;location&quot;)</code></pre>
+<p><strong>Anti-Join</strong></p>
+<p>Order is important! The code keeps observations with a key match from the first dataframe listed in the command.</p>
+<pre class="r"><code>animals_anti_join &lt;- anti_join(animals, sites, by = &quot;location&quot;)
+
+animals_anti_join_2 &lt;- anti_join(sites, animals, by = &quot;location&quot;)</code></pre>
+<p><em>You can pipe together joins, but it is confusing! Make sure you know what you’re doing at every step.</em></p>
+</div>
+</div>
 
 
 
