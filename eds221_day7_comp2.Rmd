@@ -1,0 +1,127 @@
+---
+title: "Working with Dates and Times"
+author: "Scout Leonard"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(lubridate)
+```
+
+## Play around with Functions in Lubridate
+
+```{r}
+my_date <- "03-15-1998"
+
+class(my_date)
+# automatically classified as a date
+
+
+```
+
+Lubridate parses things using:
+**ymd, mdy, dmy**
+
+```{r}
+my_date_new <- lubridate::mdy(my_date)
+
+class(my_date_new)
+#automatically reconverted it to ISO 8601 and made the class a date. this makes it earier for r to work with it. 
+```
+
+Try converting the following to dates: 
+
+- 4/6/2005 (month, day year)
+- 20100806 (year, month, day)
+- 12-Jun-1974
+- Your birthday
+
+```{r}
+date_1 <- "4/6/2005"
+date_1_new <- mdy(date_1)
+date_1_new
+
+date_2 <- "20100806"
+date_2_new <- ymd(date_2)
+date_2_new
+
+date_3 <- "12-Jun-1974"
+date_3_new <- dmy(date_3)
+date_3_new
+
+my_birthday <- "Sep-15-1995"
+my_birthday_new <- mdy(my_birthday)
+my_birthday_new
+
+#If dates are in different formats, this will still work on many elements as long as they have the same order. 
+ex_1 <- mdy(c("6/8/2020", "12/10/1983"))
+ex_1
+
+lubridate::mdy("20-03-2004")
+#you'll get a warning if your elements don't match your lubridate function, which is helpful! 
+```
+
+```{r}
+time <- "2020-08-12 11:18"
+ex_5 <- lubridate::ymd_hm(time)
+ex_5
+class(ex_5)
+#not just a date now, but a format built to work with time zones called POSIXt
+
+time_la <- with_tz(ex_5, "America/Los_Angeles")
+```
+
+I used this link for the time zone format: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+```{r}
+# Create a date time
+# Convert it to time in Sydney, Australia 
+
+date_4 <- "Jul-25-1995 13:45"
+date_4_new <- mdy_hm(date_4)
+time_sydney <- with_tz(date_4_new, "Australia/Sydney")
+time_sydney
+```
+
+```{r}
+#for week of the year:
+lubridate::week(time_sydney)
+
+#for day of the month
+lubridate::day(time_sydney)
+
+#for the minute of the hour
+lubridate::minute(time_sydney)
+
+#for the second. we did not specify this so it's zero!
+second(time_sydney)
+```
+```{r}
+# to find the day of the week i was born on! 
+my_bday <- lubridate::ymd("1995-09-15")
+class(my_bday)
+
+wday(my_bday, label = TRUE)
+```
+```{r}
+urchin_counts <- tribble(
+  ~date, ~species, ~size_mm,
+  "10/3/2020", "purple", 55,
+  "10/4/2020", "red", 48,
+  "11/17/2020", "red", 67
+)
+
+#this mutate function overwrites the existing data and converts our dates to date format from character
+#once it is a class of date, we can pull the year in a new column using mutate
+urchin_counts_ymd <- urchin_counts %>% 
+  mutate(date = lubridate::mdy(date)) %>% 
+  mutate(year = year(date),
+         month = month(date))
+```
+
+
+
