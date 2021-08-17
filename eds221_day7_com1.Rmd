@@ -1,0 +1,33 @@
+---
+title: "joins"
+author: "Scout Leonard"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(palmerpenguins)
+```
+
+
+```{r}
+penguins_clean <- penguins %>% 
+  filter(island != "Torgersen") %>% 
+  select(-c(year, sex)) %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  rename(location = island)
+```
+
+```{r}
+penguins_clean_2 <- penguins %>% 
+  filter(species == "Adelie") %>% 
+  drop_na(flipper_length_mm) %>% 
+  group_by(sex) %>% 
+  summarize(mean_flip = mean(flipper_length_mm),
+            sd_flip = sd(flipper_length_mm),
+            sample_size = n())
+```
+
